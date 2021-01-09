@@ -13,6 +13,8 @@
         @playing="playing"
         @paused="pause"
         @ready="ready"
+        width="900px"
+        height="500px"
       ></youtube>
     </div>
   </div>
@@ -85,10 +87,10 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 2;
+  z-index: 1;
 }
 .form {
-  z-index: 1;
+  z-index: 2;
   width: 400px;
   padding: 60px 0;
   display: flex;
