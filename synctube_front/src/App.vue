@@ -4,8 +4,10 @@
       <p>SYNCTUBE</p>
     </div>
     <div class="form">
-      <input type="text" id="url" v-model="url" placeholder="URL vidéo" />
-      <button @click="loadURL()">Load</button>
+      <form v-on:submit.prevent="onSubmit">
+        <input type="text" id="url" v-model="url" placeholder="URL vidéo" />
+        <input id="button" type="submit" @click="loadURL()" value="Load" />
+      </form>
     </div>
     <div class="player">
       <youtube
@@ -22,6 +24,7 @@
 
 <script>
 import { getIdFromUrl } from "vue-youtube";
+import io from "socket.io-client";
 // eslint-disable-next-line no-unused-vars
 export default {
   name: "App",
@@ -29,6 +32,8 @@ export default {
     return {
       time: 0,
       url: "",
+      thumbnail: "",
+      socket: io("localhost:3000"),
     };
   },
   computed: {
@@ -53,8 +58,13 @@ export default {
       console.log("pause");
     },
     loadURL() {
+      document.getElementById("button").preventD;
       console.log("option" + this.option);
       this.$refs.youtube.player.loadVideoById(getIdFromUrl(this.url));
+      document.getElementById("thumb").style.background =
+        "url('https://img.youtube.com/vi/" +
+        this.getIdFromUrl(this.url) +
+        "1.jpg')";
     },
     seekTo() {
       this.$refs.youtube.player.seekTo(194);
@@ -106,7 +116,8 @@ export default {
   text-align: center;
   outline: none;
 }
-.form button {
+#button {
+  outline: none;
   background: #ff0000;
   color: white;
   font-size: 18px;
@@ -119,7 +130,7 @@ export default {
   transition: all ease 200ms;
   cursor: pointer;
 }
-.form button:hover {
+#button:hover {
   box-shadow: 0 5px 5px rgba(43, 43, 43, 0.493);
 }
 .logo {
