@@ -58,17 +58,19 @@ export default {
       console.log("pause");
     },
     loadURL() {
-      document.getElementById("button").preventD;
-      console.log("option" + this.option);
+      this.socket.emit("LOAD", {
+        id: getIdFromUrl(this.url),
+      });
       this.$refs.youtube.player.loadVideoById(getIdFromUrl(this.url));
-      document.getElementById("thumb").style.background =
-        "url('https://img.youtube.com/vi/" +
-        this.getIdFromUrl(this.url) +
-        "1.jpg')";
     },
     seekTo() {
       this.$refs.youtube.player.seekTo(194);
     },
+  },
+  mounteed: () => {
+    this.socket.on("LOAD_URL", (data) => {
+      console.log(data);
+    });
   },
 };
 </script>

@@ -15,7 +15,10 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 io.on("connection", function (socket) {
-  console.log(socket.id);
+  socket.on("LOAD", (data) => {
+    console.log("id : " + data.id);
+    socket.broadcast.emit("LOAD_URL", data);
+  });
 });
 
 if (process.env.NODE_ENV === "production") {
