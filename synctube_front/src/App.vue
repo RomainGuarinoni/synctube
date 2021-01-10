@@ -62,7 +62,7 @@ export default {
       this.socket.emit("LOAD", {
         id: id,
       });
-      this.$refs.youtube.player.cueVideoById(getIdFromUrl(id));
+      this.$refs.youtube.player.loadVideoById(getIdFromUrl(id));
     },
     seekTo() {
       this.$refs.youtube.player.seekTo(194);
