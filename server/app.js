@@ -22,6 +22,9 @@ io.on("connection", function (socket) {
       id: data.id,
     });
   });
+  socket.on("PLAYING", () => {
+    socket.broadcast.emit("PLAY", {});
+  });
 });
 
 if (process.env.NODE_ENV === "production") {

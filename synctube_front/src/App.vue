@@ -19,7 +19,6 @@
         height="500px"
       ></youtube>
     </div>
-    <p>id : {{ id }}</p>
   </div>
 </template>
 
@@ -33,7 +32,6 @@ export default {
     return {
       time: 0,
       url: "",
-      id: "",
       thumbnail: "",
       socket: io(),
     };
@@ -54,6 +52,7 @@ export default {
       });
     },
     playing() {
+      this.socket.emit("PLAYING", {});
       this.getTime();
     },
     pause() {
@@ -61,9 +60,8 @@ export default {
     },
     loadURL(id) {
       this.socket.emit("LOAD", {
-        id: getIdFromUrl(id),
+        id: id,
       });
-      this.id = getIdFromUrl(id);
       this.$refs.youtube.player.cueVideoById(getIdFromUrl(id));
     },
     seekTo() {
@@ -72,8 +70,10 @@ export default {
   },
   mounted: function() {
     this.socket.on("LOAD_URL", (data) => {
-      let id = String(data.id);
-      this.loadURL(id);
+      this.loadURL(data.id);
+    });
+    this.socket.on("PLAY", () => {
+      this.$refs.youtube.player.playVideo();
     });
   },
 };
