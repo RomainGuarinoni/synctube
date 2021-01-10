@@ -73,9 +73,8 @@ export default {
   },
   mounted: function() {
     this.socket.on("LOAD_URL", (data) => {
-      console.log(data.id);
       this.id = data.id;
-      console.log("id : " + this.id);
+      this.loadURL(this.id);
     });
   },
 };
