@@ -22,8 +22,12 @@ io.on("connection", function (socket) {
       id: data.id,
     });
   });
-  socket.on("PLAYING", () => {
-    socket.broadcast.emit("PLAY", {});
+  socket.on("PLAYING", (data) => {
+    console.log(data.time);
+    socket.broadcast.emit("PLAY", { time: data.time });
+  });
+  socket.on("PAUSE", () => {
+    socket.broadcast.emit("PAUSE", {});
   });
 });
 

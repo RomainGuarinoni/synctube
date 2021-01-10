@@ -47,16 +47,17 @@ export default {
     },
     getTime() {
       this.$refs.youtube.player.getCurrentTime().then((time) => {
-        console.log("time : " + time);
         this.time = time;
       });
     },
     playing() {
-      this.socket.emit("PLAYING", {});
       this.getTime();
+      this.socket.emit("PLAYING", {
+        time: this.time,
+      });
     },
     pause() {
-      console.log("pause");
+      this.socket.emit("PAUSE", {});
     },
     loadURL(id) {
       this.socket.emit("LOAD", {
@@ -72,8 +73,12 @@ export default {
     this.socket.on("LOAD_URL", (data) => {
       this.$refs.youtube.player.cueVideoById(getIdFromUrl(data.id));
     });
-    this.socket.on("PLAY", () => {
+    this.socket.on("PLAY", (data) => {
+      this.$refs.youtube.player.seekTo(data.time);
       this.$refs.youtube.player.playVideo();
+    });
+    this.socket.on("PAUSE", () => {
+      this.$refs.youtube.player.pauseVideo();
     });
   },
 };
