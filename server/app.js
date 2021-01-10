@@ -22,7 +22,7 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 
-app.get("/", (req, res, next) => {
+app.get("/info", (req, res, next) => {
   console.log("AHAHAHAHAs");
   res.status(201).json("coucou");
 });

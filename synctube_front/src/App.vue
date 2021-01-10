@@ -123,7 +123,7 @@ export default {
     },
   },
   mounted: function() {
-    axios.get("/").then((data) => {
+    axios.get("info").then((data) => {
       console.log(data);
     });
     this.socket.on("LOAD_URL", (data) => {
