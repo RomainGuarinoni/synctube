@@ -4,15 +4,28 @@ const PORT = process.env.PORT || 3000;
 const bodyParser = require("body-parser");
 const http = require("http").Server(app);
 const cors = require("cors");
+const mongoose = require("mongoose");
+const History = require("./models/history");
 const io = require("socket.io")(http, {
   cors: {
     origin: "*",
   },
 });
-
+mongoose
+  .connect(
+    "mongodb+srv://admin:admin@cluster0.jsei0.mongodb.net/Cluster0?retryWrites=true&w=majority",
+    { useNewUrlParser: true, useUnifiedTopology: true }
+  )
+  .then(() => console.log("Connexion à MongoDB réussie !"))
+  .catch((e) => console.log(e));
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
+
+app.get("/", (req, res, next) => {
+  console.log("AHAHAHAHAs");
+  res.status(201).json("coucou");
+});
 
 io.on("connection", function (socket) {
   console.log("user connected : " + socket.id);
@@ -31,6 +44,19 @@ io.on("connection", function (socket) {
   socket.on("SEEK", (data) => {
     socket.broadcast.emit("SEEK", {
       time: data.time,
+    });
+  });
+  socket.on("HISTORY", (data) => {
+    console.log("history");
+    var history = new History({
+      id: data.id,
+      titre: data.titre,
+      img: data.img,
+    });
+    history.save(function (err) {
+      if (err) {
+        console.log(err);
+      }
     });
   });
 });

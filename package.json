@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server/app.js",
-    "dev" : "nodemon server/app.js"
+    "dev": "nodemon server/app.js"
   },
   "repository": {
     "type": "git",
@@ -27,6 +27,7 @@
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "mongoose": "^5.11.11",
     "nodemon": "^2.0.7",
     "socket.io": "^3.0.5"
   }

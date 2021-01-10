@@ -6,9 +6,6 @@ module.exports = {
   publicPath: "",
   devServer: {
     proxy: {
-      "/info": {
-        target: "http://localhost:3000",
-      },
       "/": {
         target: "http://localhost:3000",
       },

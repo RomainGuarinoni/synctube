@@ -15,6 +15,8 @@
         ref="youtube"
         @playing="playing"
         @paused="pause"
+        @error="error"
+        @ready="ready"
         width="900px"
         height="450px"
       ></youtube>
@@ -32,6 +34,7 @@
       </div>
     </div>
   </div>
+  <!-- la thumbnail eest de 120 px par 90 px-->
 </template>
 
 <script>
@@ -71,6 +74,7 @@ export default {
       });
     },
     playing() {
+      console.log("playing right now");
       this.$refs.youtube.player.getDuration().then((res) => {
         this.videoTime = res;
       });
@@ -96,6 +100,12 @@ export default {
         )
         .then((res) => {
           this.title = res.data.items[0].snippet.title;
+          console.log(id);
+          this.socket.emit("HISTORY", {
+            id: id,
+            titre: res.data.items[0].snippet.title,
+            img: res.data.items[0].snippet.thumbnails.default.url,
+          });
         });
       this.$refs.youtube.player.cueVideoById(getIdFromUrl(id));
     },
@@ -105,9 +115,27 @@ export default {
       });
       this.$refs.youtube.player.seekTo(this.forward);
     },
+    error() {
+      console.log("there is an error");
+    },
+    ready() {
+      console.log("ready");
+    },
   },
   mounted: function() {
+    axios.get("/").then((data) => {
+      console.log(data);
+    });
     this.socket.on("LOAD_URL", (data) => {
+      axios
+        .get(
+          "https://www.googleapis.com/youtube/v3/videos?id=" +
+            getIdFromUrl(data.id) +
+            "&key=AIzaSyBlLC4WxoLFqESw9Xwf0zr8OY3-EYA5Dvk&part=snippet,contentDetails,statistics,status"
+        )
+        .then((res) => {
+          this.title = res.data.items[0].snippet.title;
+        });
       this.$refs.youtube.player.cueVideoById(getIdFromUrl(data.id));
     });
     // eslint-disable-next-line no-unused-vars
@@ -115,6 +143,7 @@ export default {
       console.log("need to play");
       this.slave = true;
       this.$refs.youtube.player.playVideo();
+      console.log("should play now");
     });
     this.socket.on("PAUSE", () => {
       this.$refs.youtube.player.pauseVideo();
