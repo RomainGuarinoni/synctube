@@ -10,6 +10,7 @@
       </form>
     </div>
     <div class="player">
+      <h1>{{ title }}</h1>
       <youtube
         ref="youtube"
         @playing="playing"
@@ -18,6 +19,7 @@
         height="450px"
       ></youtube>
       <div class="barBox">
+        <p>Fast forward :</p>
         <input
           type="range"
           id="bar"
@@ -34,6 +36,7 @@
 
 <script>
 import { getIdFromUrl } from "vue-youtube";
+import axios from "axios";
 import io from "socket.io-client";
 // eslint-disable-next-line no-unused-vars
 export default {
@@ -45,6 +48,7 @@ export default {
       thumbnail: "",
       forward: 0,
       videoTime: 0,
+      title: "",
       slave: false, // savoir qui prends le controle du boutons play/pause
       socket: io(),
     };
@@ -84,6 +88,15 @@ export default {
       this.socket.emit("LOAD", {
         id: id,
       });
+      axios
+        .get(
+          "https://www.googleapis.com/youtube/v3/videos?id=" +
+            getIdFromUrl(id) +
+            "&key=AIzaSyBlLC4WxoLFqESw9Xwf0zr8OY3-EYA5Dvk&part=snippet,contentDetails,statistics,status"
+        )
+        .then((res) => {
+          this.title = res.data.items[0].snippet.title;
+        });
       this.$refs.youtube.player.cueVideoById(getIdFromUrl(id));
     },
     seek() {
