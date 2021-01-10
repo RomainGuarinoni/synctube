@@ -14,10 +14,20 @@
         ref="youtube"
         @playing="playing"
         @paused="pause"
-        @ready="ready"
         width="900px"
-        height="500px"
+        height="450px"
       ></youtube>
+      <div class="barBox">
+        <input
+          type="range"
+          id="bar"
+          min="0"
+          :max="videoTime"
+          v-model="forward"
+          @change="seek"
+        />
+        <p>{{ forwardTime }}</p>
+      </div>
     </div>
   </div>
 </template>
@@ -33,6 +43,9 @@ export default {
       time: 0,
       url: "",
       thumbnail: "",
+      forward: 0,
+      videoTime: 0,
+      slave: false, // savoir qui prends le controle du boutons play/pause
       socket: io(),
     };
   },
@@ -40,23 +53,31 @@ export default {
     player() {
       return this.$refs.youtube.player;
     },
+    forwardTime() {
+      let min = Math.floor(this.forward / 60);
+      let sec = this.forward % 60;
+      let result = min + " min " + sec + " sec";
+      return result;
+    },
   },
   methods: {
-    ready() {
-      console.log("la vidéo est prête");
-    },
     getTime() {
       this.$refs.youtube.player.getCurrentTime().then((time) => {
         this.time = time;
       });
     },
     playing() {
-      this.getTime();
-      this.socket.emit("PLAYING", {
-        time: this.time,
+      this.$refs.youtube.player.getDuration().then((res) => {
+        this.videoTime = res;
       });
+      if (!this.slave) {
+        this.socket.emit("PLAYING", {});
+      }
+      this.slave = false;
     },
     pause() {
+      this.getTime();
+      console.log("time pause : " + this.time);
       this.socket.emit("PAUSE", {});
     },
     loadURL(id) {
@@ -65,20 +86,30 @@ export default {
       });
       this.$refs.youtube.player.cueVideoById(getIdFromUrl(id));
     },
-    seekTo() {
-      this.$refs.youtube.player.seekTo(194);
+    seek() {
+      this.socket.emit("SEEK", {
+        time: this.forward,
+      });
+      this.$refs.youtube.player.seekTo(this.forward);
     },
   },
   mounted: function() {
     this.socket.on("LOAD_URL", (data) => {
       this.$refs.youtube.player.cueVideoById(getIdFromUrl(data.id));
     });
-    this.socket.on("PLAY", (data) => {
-      this.$refs.youtube.player.seekTo(data.time);
+    // eslint-disable-next-line no-unused-vars
+    this.socket.on("PLAY", () => {
+      console.log("need to play");
+      this.slave = true;
       this.$refs.youtube.player.playVideo();
     });
     this.socket.on("PAUSE", () => {
       this.$refs.youtube.player.pauseVideo();
+    });
+    this.socket.on("SEEK", (data) => {
+      console.log("seek to" + data.time);
+      this.slave = true;
+      this.$refs.youtube.player.seekTo(Number(data.time));
     });
   },
 };
@@ -106,6 +137,7 @@ export default {
   left: 0;
   right: 0;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   z-index: 1;
@@ -158,5 +190,12 @@ export default {
 .logo p {
   margin: 0;
   padding: 0;
+}
+#bar {
+  width: 800px;
+  color: red;
+}
+.barBox {
+  display: flex;
 }
 </style>
