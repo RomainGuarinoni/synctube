@@ -15,9 +15,12 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 io.on("connection", function (socket) {
+  console.log("user connected : " + socket.id);
   socket.on("LOAD", (data) => {
     console.log("id : " + data.id);
-    socket.broadcast.emit("LOAD_URL", data);
+    socket.broadcast.emit("LOAD_URL", {
+      id: data.id,
+    });
   });
 });
 

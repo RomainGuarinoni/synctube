@@ -4,9 +4,9 @@
       <p>SYNCTUBE</p>
     </div>
     <div class="form">
-      <form v-on:submit.prevent="onSubmit">
+      <form v-on:submit.prevent>
         <input type="text" id="url" v-model="url" placeholder="URL vidéo" />
-        <input id="button" type="submit" @click="loadURL()" value="Load" />
+        <input id="button" type="submit" @click="loadURL(url)" value="Load" />
       </form>
     </div>
     <div class="player">
@@ -19,6 +19,8 @@
         height="500px"
       ></youtube>
     </div>
+    <p>id : {{ id }}</p>
+    <button @click="this.$refs.youtube.player.cueVideoById(id)">load</button>
   </div>
 </template>
 
@@ -32,8 +34,9 @@ export default {
     return {
       time: 0,
       url: "",
+      id: "",
       thumbnail: "",
-      socket: io("localhost:3000"),
+      socket: io(),
     };
   },
   computed: {
@@ -57,19 +60,22 @@ export default {
     pause() {
       console.log("pause");
     },
-    loadURL() {
+    loadURL(id) {
       this.socket.emit("LOAD", {
-        id: getIdFromUrl(this.url),
+        id: getIdFromUrl(id),
       });
-      this.$refs.youtube.player.loadVideoById(getIdFromUrl(this.url));
+      this.id = getIdFromUrl(id);
+      this.$refs.youtube.player.cueVideoById(getIdFromUrl(id));
     },
     seekTo() {
       this.$refs.youtube.player.seekTo(194);
     },
   },
-  mounteed: () => {
+  mounted: function() {
     this.socket.on("LOAD_URL", (data) => {
-      console.log(data);
+      console.log(data.id);
+      this.id = data.id;
+      console.log("id : " + this.id);
     });
   },
 };
