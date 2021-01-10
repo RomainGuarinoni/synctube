@@ -7,9 +7,6 @@
       <form v-on:submit.prevent>
         <input type="text" id="url" v-model="url" placeholder="URL vidéo" />
         <input id="button" type="submit" @click="loadURL(url)" value="Load" />
-        <button @click="this.$refs.youtube.player.cueVideoById(id)">
-          load
-        </button>
       </form>
     </div>
     <div class="player">
@@ -75,7 +72,8 @@ export default {
   },
   mounted: function() {
     this.socket.on("LOAD_URL", (data) => {
-      this.id = String(data.id);
+      let id = String(data.id);
+      this.loadURL(id);
     });
   },
 };
