@@ -153,6 +153,9 @@ export default {
     loadHistory(payload) {
       this.title = payload.titre;
       this.$refs.youtube.player.cueVideoById(getIdFromUrl(payload.id));
+      this.socket.emit("LOAD", {
+        id: payload.id,
+      });
     },
   },
   mounted: function() {
