@@ -12,6 +12,9 @@ module.exports = {
       "/": {
         target: "http://localhost:3000",
       },
+      "/moreinfo": {
+        target: "http://localhost:3000",
+      },
     },
   },
 };

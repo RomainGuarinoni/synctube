@@ -35,14 +35,17 @@
     </div>
     <div class="history">
       <h2>History</h2>
-      <History
-        v-for="(item, index) in historyTab"
-        :key="index"
-        :id="item.id"
-        :titre="item.titre"
-        :img="item.img"
-        :index="index"
-      />
+      <div class="historyScroll">
+        <History
+          v-for="(item, index) in historyTab"
+          :key="index"
+          :id="item.id"
+          :titre="item.titre"
+          :img="item.img"
+          :index="index"
+        />
+      </div>
+      <button @click="loadMore">Load more</button>
     </div>
   </div>
   <!-- la thumbnail eest de 120 px par 90 px-->
@@ -141,6 +144,11 @@ export default {
     ready() {
       console.log("ready");
     },
+    loadMore() {
+      axios.get("moreinfo").then((history) => {
+        this.historyTab = history.data;
+      });
+    },
   },
   mounted: function() {
     axios.get("info").then((history) => {
@@ -182,12 +190,18 @@ export default {
   position: absolute;
   top: 100px;
   right: 10px;
-  overflow-y: scroll;
+  width: 480px;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   height: 800px;
   z-index: 2;
+}
+::-webkit-scrollbar {
+  width: 20px;
+}
+.historyScroll {
+  overflow-y: scroll;
 }
 .history h2 {
   align-self: center;
@@ -250,6 +264,21 @@ export default {
   cursor: pointer;
 }
 #button:hover {
+  box-shadow: 0 5px 5px rgba(43, 43, 43, 0.493);
+}
+.history button {
+  outline: none;
+  background: #ff0000;
+  color: white;
+  font-size: 18px;
+  right: 0px;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  transition: all ease 200ms;
+  cursor: pointer;
+}
+.history button:hover {
   box-shadow: 0 5px 5px rgba(43, 43, 43, 0.493);
 }
 .logo {

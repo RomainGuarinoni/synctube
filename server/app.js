@@ -23,14 +23,31 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 app.get("/info", (req, res, next) => {
-  History.find()
-    .limit(5)
+  History.find({})
+    .sort({ date: -1 })
     .exec(function (err, data) {
       if (err) {
         console.log("erreur" + e);
       }
-      res.status(200).json(data);
+      let tab = [];
+      for (i = 0; i < 5; i++) {
+        tab[i] = data[data.length - (i + 1)];
+      }
+      res.status(200).json(tab);
     });
+});
+app.get("/moreinfo", (req, res) => {
+  console.log("yeaah");
+  History.find({}).exec(function (err, data) {
+    if (err) {
+      console.log("erreur" + e);
+    }
+    let tab = [];
+    for (i = 0; i < 20; i++) {
+      tab[i] = data[data.length - (i + 1)];
+    }
+    res.status(200).json(tab);
+  });
 });
 
 io.on("connection", function (socket) {
@@ -53,7 +70,7 @@ io.on("connection", function (socket) {
     });
   });
   socket.on("HISTORY", (data) => {
-    console.log("history");
+    console.log("history" + data.titre);
     var history = new History({
       id: data.id,
       titre: data.titre,

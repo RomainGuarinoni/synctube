@@ -58,8 +58,7 @@ export default {
   border: none;
   align-self: flex-end;
   margin-right: 10px;
-  width: 60px;
-  height: 25px;
+  padding: 5px 15px;
   border-radius: 5px;
   transition: all ease 200ms;
   cursor: pointer;
