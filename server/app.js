@@ -23,8 +23,14 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 app.get("/info", (req, res, next) => {
-  console.log("AHAHAHAHAs");
-  res.status(201).json("coucou");
+  History.find()
+    .limit(5)
+    .exec(function (err, data) {
+      if (err) {
+        console.log("erreur" + e);
+      }
+      res.status(200).json(data);
+    });
 });
 
 io.on("connection", function (socket) {

@@ -33,6 +33,17 @@
         <p>{{ forwardTime }}</p>
       </div>
     </div>
+    <div class="history">
+      <h2>History</h2>
+      <History
+        v-for="(item, index) in historyTab"
+        :key="index"
+        :id="item.id"
+        :titre="item.titre"
+        :img="item.img"
+        :index="index"
+      />
+    </div>
   </div>
   <!-- la thumbnail eest de 120 px par 90 px-->
 </template>
@@ -41,9 +52,13 @@
 import { getIdFromUrl } from "vue-youtube";
 import axios from "axios";
 import io from "socket.io-client";
+import History from "./components/History";
 // eslint-disable-next-line no-unused-vars
 export default {
   name: "App",
+  components: {
+    History,
+  },
   data() {
     return {
       time: 0,
@@ -51,6 +66,7 @@ export default {
       thumbnail: "",
       forward: 0,
       videoTime: 0,
+      historyTab: [],
       title: "",
       slave: false, // savoir qui prends le controle du boutons play/pause
       socket: io(),
@@ -107,6 +123,10 @@ export default {
             img: res.data.items[0].snippet.thumbnails.default.url,
           });
         });
+      axios.get("info").then((history) => {
+        this.historyTab = history.data;
+        console.log(history.data);
+      });
       this.$refs.youtube.player.cueVideoById(getIdFromUrl(id));
     },
     seek() {
@@ -123,8 +143,8 @@ export default {
     },
   },
   mounted: function() {
-    axios.get("info").then((data) => {
-      console.log(data);
+    axios.get("info").then((history) => {
+      this.historyTab = history.data;
     });
     this.socket.on("LOAD_URL", (data) => {
       axios
@@ -158,6 +178,20 @@ export default {
 </script>
 
 <style>
+.history {
+  position: absolute;
+  top: 100px;
+  right: 10px;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 800px;
+  z-index: 2;
+}
+.history h2 {
+  align-self: center;
+}
 #app {
   margin: 0;
   padding: 0;
