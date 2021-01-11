@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <div id="left"></div>
+    <div id="left" :style="{ background: getImg(img) }"></div>
     <div class="right">
       <h3>{{ titre }}</h3>
       <button class="load" @click="loadHistory">Load</button>
@@ -18,11 +18,10 @@ export default {
         titre: this.titre,
       });
     },
-  },
-  mounted: function() {
-    console.log(this.index + " : " + this.img);
-    document.getElementById("left").style.backgroundImage =
-      "url(" + this.img + ")";
+    getImg(img) {
+      let res = "url(" + img + ")";
+      return res;
+    },
   },
 };
 </script>
