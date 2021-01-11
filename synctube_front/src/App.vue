@@ -43,6 +43,7 @@
           :titre="item.titre"
           :img="item.img"
           :index="index"
+          @loadHistory="loadHistory"
         />
       </div>
       <button @click="loadMore">Load more</button>
@@ -148,6 +149,10 @@ export default {
       axios.get("moreinfo").then((history) => {
         this.historyTab = history.data;
       });
+    },
+    loadHistory(payload) {
+      this.title = payload.titre;
+      this.$refs.youtube.player.cueVideoById(getIdFromUrl(payload.id));
     },
   },
   mounted: function() {
