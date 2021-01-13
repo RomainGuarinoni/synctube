@@ -221,6 +221,7 @@ export default {
 .playerBox {
   width: 80%;
   max-width: 800px;
+  border: 5px solid blue;
 }
 
 @media all and (max-width: 1875px) {
