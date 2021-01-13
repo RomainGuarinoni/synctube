@@ -216,6 +216,7 @@ export default {
   justify-content: center;
   align-items: center;
   z-index: 1;
+  border: 5px solid blue;
 }
 .playerBox {
   width: 80%;
