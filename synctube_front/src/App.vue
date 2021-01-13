@@ -100,7 +100,6 @@ export default {
       });
     },
     playing() {
-      console.log("playing right now");
       this.$refs.youtube.player.getDuration().then((res) => {
         this.videoTime = res;
       });
@@ -111,7 +110,6 @@ export default {
     },
     pause() {
       this.getTime();
-      console.log("time pause : " + this.time);
       this.socket.emit("PAUSE", {});
     },
     loadURL(id) {
@@ -126,7 +124,6 @@ export default {
         )
         .then((res) => {
           this.title = res.data.items[0].snippet.title;
-          console.log(id);
           this.socket.emit("HISTORY", {
             id: id,
             titre: res.data.items[0].snippet.title,
@@ -135,7 +132,6 @@ export default {
         });
       axios.get("info").then((history) => {
         this.historyTab = history.data;
-        console.log(history.data);
       });
       this.$refs.youtube.player.cueVideoById(getIdFromUrl(id));
     },
@@ -144,12 +140,6 @@ export default {
         time: this.forward,
       });
       this.$refs.youtube.player.seekTo(this.forward);
-    },
-    error() {
-      console.log("there is an error");
-    },
-    ready() {
-      console.log("ready");
     },
     loadMore() {
       axios.get("moreinfo").then((history) => {
@@ -182,16 +172,13 @@ export default {
     });
     // eslint-disable-next-line no-unused-vars
     this.socket.on("PLAY", () => {
-      console.log("need to play");
       this.slave = true;
       this.$refs.youtube.player.playVideo();
-      console.log("should play now");
     });
     this.socket.on("PAUSE", () => {
       this.$refs.youtube.player.pauseVideo();
     });
     this.socket.on("SEEK", (data) => {
-      console.log("seek to" + data.time);
       this.slave = true;
       this.$refs.youtube.player.seekTo(Number(data.time));
     });
@@ -287,7 +274,6 @@ export default {
   z-index: 2;
   max-width: 700px;
   width: 80%;
-  border: 2px solid blue;
   padding: 60px 0;
   display: flex;
   justify-content: space-around;
