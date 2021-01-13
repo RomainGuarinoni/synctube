@@ -49,9 +49,12 @@ app.get("/moreinfo", (req, res) => {
     res.status(200).json(tab);
   });
 });
-
+var connected = 0;
 io.on("connection", function (socket) {
-  console.log("user connected : " + socket.id);
+  connected++;
+  socket.emit("connexion", {
+    number: connected,
+  });
   socket.on("LOAD", (data) => {
     console.log("id : " + data.id);
     socket.broadcast.emit("LOAD_URL", {
@@ -80,6 +83,12 @@ io.on("connection", function (socket) {
       if (err) {
         console.log(err);
       }
+    });
+  });
+  socket.on("disconnect", () => {
+    connected--;
+    socket.emit("disconnected", {
+      number: connected,
     });
   });
 });

@@ -1,7 +1,10 @@
 <template>
   <div id="app">
-    <div class="logo">
-      <p>SYNCTUBE</p>
+    <div class="logoBox">
+      <div class="logo">
+        <p>SYNCTUBE</p>
+      </div>
+      <p class="connect">connected : {{ connected }}</p>
     </div>
     <div class="form">
       <form v-on:submit.prevent>
@@ -32,21 +35,21 @@
         />
         <p>{{ forwardTime }}</p>
       </div>
-    </div>
-    <div class="history">
-      <h2>History</h2>
-      <div class="historyScroll">
-        <History
-          v-for="(item, index) in historyTab"
-          :key="index"
-          :id="item.id"
-          :titre="item.titre"
-          :img="item.img"
-          :index="index"
-          @loadHistory="loadHistory"
-        />
+      <div class="history">
+        <h2>History</h2>
+        <div class="historyScroll">
+          <History
+            v-for="(item, index) in historyTab"
+            :key="index"
+            :id="item.id"
+            :titre="item.titre"
+            :img="item.img"
+            :index="index"
+            @loadHistory="loadHistory"
+          />
+        </div>
+        <button @click="loadMore">Load more</button>
       </div>
-      <button @click="loadMore">Load more</button>
     </div>
   </div>
   <!-- la thumbnail eest de 120 px par 90 px-->
@@ -70,6 +73,7 @@ export default {
       thumbnail: "",
       forward: 0,
       videoTime: 0,
+      connected: 0,
       historyTab: [],
       title: "",
       slave: false, // savoir qui prends le controle du boutons play/pause
@@ -189,6 +193,12 @@ export default {
       this.slave = true;
       this.$refs.youtube.player.seekTo(Number(data.time));
     });
+    this.socket.on("connexion", (data) => {
+      this.connected = data.number;
+    });
+    this.socket.on("disconnected", (data) => {
+      this.connected = data.number;
+    });
   },
 };
 </script>
@@ -289,10 +299,18 @@ export default {
 .history button:hover {
   box-shadow: 0 5px 5px rgba(43, 43, 43, 0.493);
 }
-.logo {
+.logoBox {
   position: absolute;
   top: 40px;
   left: 50px;
+  display: flex;
+  align-items: center;
+}
+.connect {
+  margin-left: 40px;
+  font-size: 20px;
+}
+.logo {
   padding: 2px 20px;
   border-radius: 10px;
   border: none;
