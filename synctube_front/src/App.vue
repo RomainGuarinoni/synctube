@@ -14,15 +14,17 @@
     </div>
     <div class="player">
       <h1>{{ title }}</h1>
-      <youtube
-        ref="youtube"
-        @playing="playing"
-        @paused="pause"
-        @error="error"
-        @ready="ready"
-        width="900px"
-        height="450px"
-      ></youtube>
+      <div class="playerBox">
+        <youtube
+          ref="youtube"
+          @playing="playing"
+          @paused="pause"
+          @error="error"
+          @ready="ready"
+          :resize="true"
+          :fitParent="true"
+        ></youtube>
+      </div>
       <div class="barBox">
         <p>Fast forward :</p>
         <input
@@ -208,12 +210,54 @@ export default {
   position: absolute;
   top: 100px;
   right: 10px;
-  width: 480px;
+  max-width: 480px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   height: 800px;
   z-index: 2;
+}
+.player {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+.playerBox {
+  width: 80%;
+  max-width: 800px;
+}
+
+@media all and (max-width: 1875px) {
+  .history {
+    position: static;
+  }
+  .player {
+    position: static;
+    width: 80%;
+    max-width: 1000px;
+  }
+}
+@media all and (max-width: 1253px) {
+  .logoBox {
+    z-index: 1;
+    width: 100% !important;
+    left: 0 !important;
+    justify-content: space-between;
+  }
+  .connect {
+    margin-right: 10px;
+  }
+  .logo {
+    margin-left: 10px;
+  }
 }
 ::-webkit-scrollbar {
   width: 20px;
@@ -238,33 +282,33 @@ export default {
   justify-content: flex-start;
   align-items: center;
 }
-.player {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 1;
-}
+
 .form {
   z-index: 2;
-  width: 400px;
+  max-width: 700px;
+  width: 80%;
+  border: 2px solid blue;
   padding: 60px 0;
   display: flex;
   justify-content: space-around;
-  width: 700px;
   position: relative;
 }
-.form input {
+@media all and (max-width: 933px) {
+  #url {
+    width: 400px !important;
+  }
+  .logo {
+    font-size: 24px !important;
+  }
+}
+#url {
   width: 500px;
+  border: 2px solid red;
   border: none;
   border-bottom: 1px solid rgb(46, 46, 46);
   height: 30px;
   text-align: center;
+  display: inline-block;
   outline: none;
 }
 #button {
@@ -323,10 +367,12 @@ export default {
   padding: 0;
 }
 #bar {
-  width: 800px;
+  width: 100%;
   color: red;
 }
 .barBox {
+  max-width: 900px;
+  width: 100%;
   display: flex;
 }
 </style>
