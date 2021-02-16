@@ -7,7 +7,7 @@ Une application pour regarder des vidéos youtube en complète synchronisation a
 ## fonctionnalitées
 
 - charge toutes les vidéos de youtube
-- lorsque qu'un utilisateur lance, met en pause ou avance la vidéo, ces modifications se font pour tous les utilisateurs connectés
+- lorsqu'un utilisateur lance, met en pause ou avance la vidéo, ces modifications se font pour tous les utilisateurs connectés
 - système d'historique
 
 ## stack
