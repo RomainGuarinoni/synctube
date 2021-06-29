@@ -1,17 +1,24 @@
 <template>
   <div id="app">
-    <div class="logoBox">
-      <div class="logo">
-        <p>SYNCTUBE</p>
+    <div class="header">
+      <div class="logoBox headerWidth">
+        <div class="logo">
+          <p>SYNCTUBE</p>
+        </div>
+        <p class="connect">connected : {{ connected }}</p>
       </div>
-      <p class="connect">connected : {{ connected }}</p>
+      <div class="form">
+        <form v-on:submit.prevent>
+          <input type="text" id="url" v-model="url" placeholder="URL vidéo" />
+          <input id="button" type="submit" @click="loadURL(url)" value="Load" />
+        </form>
+      </div>
+      <div class="headerWidth">
+        <span>Night mode</span
+        ><ToggleButton @DARKMODE="darkMode" :darkModeStatus="darkModeStatus" />
+      </div>
     </div>
-    <div class="form">
-      <form v-on:submit.prevent>
-        <input type="text" id="url" v-model="url" placeholder="URL vidéo" />
-        <input id="button" type="submit" @click="loadURL(url)" value="Load" />
-      </form>
-    </div>
+
     <div class="player">
       <h1>{{ title }}</h1>
       <div class="playerBox">
@@ -62,11 +69,13 @@ import { getIdFromUrl } from "vue-youtube";
 import axios from "axios";
 import io from "socket.io-client";
 import History from "./components/History";
+import ToggleButton from "./components/ToggleButton";
 // eslint-disable-next-line no-unused-vars
 export default {
   name: "App",
   components: {
     History,
+    ToggleButton,
   },
   data() {
     return {
@@ -80,6 +89,7 @@ export default {
       title: "",
       slave: false, // savoir qui prends le controle du boutons play/pause
       socket: io(),
+      darkModeStatus: false,
     };
   },
   computed: {
@@ -94,6 +104,30 @@ export default {
     },
   },
   methods: {
+    darkMode(status) {
+      console.log("pass there hehe");
+      console.log(status.mode);
+      const parent = document.getElementById("app");
+      const url = document.getElementById("url");
+      localStorage.setItem("darkMode", status.mode);
+      if (status.mode) {
+        console.log("here");
+        console.log(parent);
+        this.darkModeStatus = true;
+        parent.style.background = "#121212";
+        parent.style.color = "white";
+        url.style.background = "#121212";
+        url.style.color = "white";
+        url.style.borderBottom = "1px solid white !important";
+      } else {
+        this.darkModeStatus = false;
+
+        parent.style.background = "white";
+        parent.style.color = "black";
+        url.style.background = "white";
+        url.style.borderBottom = "1px solid rgb(46, 46, 46)";
+      }
+    },
     getTime() {
       this.$refs.youtube.player.getCurrentTime().then((time) => {
         this.time = time;
@@ -153,6 +187,14 @@ export default {
         id: payload.id,
       });
     },
+  },
+  created: function() {
+    console.log(
+      `status darkMode mounted : ` + localStorage.getItem("darkMode")
+    );
+    localStorage.getItem("darkMode") == "true"
+      ? this.darkMode({ mode: true })
+      : console.log("wtf");
   },
   mounted: function() {
     axios.get("info").then((history) => {
@@ -221,6 +263,12 @@ export default {
   width: 80%;
   max-width: 800px;
 }
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+}
 
 @media all and (max-width: 1875px) {
   .history {
@@ -271,12 +319,9 @@ export default {
 }
 
 .form {
-  z-index: 2;
-  max-width: 700px;
-  width: 80%;
   padding: 60px 0;
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   position: relative;
 }
 @media all and (max-width: 933px) {
@@ -289,13 +334,14 @@ export default {
 }
 #url {
   width: 500px;
-  border: 2px solid red;
   border: none;
   border-bottom: 1px solid rgb(46, 46, 46);
   height: 30px;
   text-align: center;
-  display: inline-block;
   outline: none;
+  margin: 0 20px;
+  position: relative;
+  z-index: 3;
 }
 #button {
   outline: none;
@@ -303,7 +349,7 @@ export default {
   color: white;
   font-size: 18px;
   position: absolute;
-  right: 0px;
+  z-index: 2;
   border: none;
   width: 80px;
   height: 35px;
@@ -330,9 +376,6 @@ export default {
   box-shadow: 0 5px 5px rgba(43, 43, 43, 0.493);
 }
 .logoBox {
-  position: absolute;
-  top: 40px;
-  left: 50px;
   display: flex;
   align-items: center;
 }
@@ -360,5 +403,17 @@ export default {
   max-width: 900px;
   width: 100%;
   display: flex;
+}
+.headerWidth {
+  min-width: 400px;
+}
+.headerWidth:last-of-type {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.headerWidth:last-of-type span {
+  margin: 0 10px;
+  font-weight: bold;
 }
 </style>
