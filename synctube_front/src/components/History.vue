@@ -1,5 +1,11 @@
 <template>
-  <div class="box">
+  <div
+    class="box"
+    v-bind:class="{
+      whiteBoxShadow: !darkModeStatus,
+      darkBoxShadow: darkModeStatus,
+    }"
+  >
     <div id="left" :style="{ background: getImg(img) }"></div>
     <div class="right">
       <h3>{{ titre }}</h3>
@@ -10,7 +16,7 @@
 
 <script>
 export default {
-  props: ["id", "titre", "img", "index"],
+  props: ["id", "titre", "img", "index", "darkModeStatus"],
   methods: {
     loadHistory() {
       this.$emit("loadHistory", {
@@ -47,7 +53,12 @@ export default {
   align-items: center;
   border: none;
   padding: 10px;
+}
+.whiteBoxShadow {
   box-shadow: 0px 0px 10px rgba(221, 221, 221, 0.726);
+}
+.darkBoxShadow {
+  box-shadow: 0px 0px 10px rgba(17, 17, 17, 0.726);
 }
 .load {
   outline: none;

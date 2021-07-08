@@ -26,8 +26,6 @@
           ref="youtube"
           @playing="playing"
           @paused="pause"
-          @error="error"
-          @ready="ready"
           :resize="true"
           :fitParent="true"
         ></youtube>
@@ -54,6 +52,7 @@
             :titre="item.titre"
             :img="item.img"
             :index="index"
+            :darkModeStatus="darkModeStatus"
             @loadHistory="loadHistory"
           />
         </div>
@@ -105,14 +104,13 @@ export default {
   },
   methods: {
     darkMode(status) {
-      console.log("pass there hehe");
-      console.log(status.mode);
       const parent = document.getElementById("app");
       const url = document.getElementById("url");
+      console.log("pass there");
       localStorage.setItem("darkMode", status.mode);
       if (status.mode) {
-        console.log("here");
-        console.log(parent);
+        console.log("enable darkmode");
+
         this.darkModeStatus = true;
         parent.style.background = "#121212";
         parent.style.color = "white";
@@ -120,8 +118,9 @@ export default {
         url.style.color = "white";
         url.style.borderBottom = "1px solid white !important";
       } else {
-        this.darkModeStatus = false;
+        console.log("disable darkmode");
 
+        this.darkModeStatus = false;
         parent.style.background = "white";
         parent.style.color = "black";
         url.style.background = "white";
@@ -189,14 +188,14 @@ export default {
     },
   },
   created: function() {
-    console.log(
-      `status darkMode mounted : ` + localStorage.getItem("darkMode")
-    );
     localStorage.getItem("darkMode") == "true"
-      ? this.darkMode({ mode: true })
-      : console.log("wtf");
+      ? (this.darkModeStatus = true)
+      : null;
   },
   mounted: function() {
+    localStorage.getItem("darkMode") == "true"
+      ? this.darkMode({ mode: true })
+      : null;
     axios.get("info").then((history) => {
       this.historyTab = history.data;
     });

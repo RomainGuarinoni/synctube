@@ -12,11 +12,6 @@ export default {
       type: Boolean,
     },
   },
-  data() {
-    return {
-      on: false,
-    };
-  },
   methods: {
     handleClick() {
       this.on = !this.on;
@@ -32,6 +27,8 @@ export default {
     if (this.darkModeStatus) {
       this.on = true;
       document.getElementById("slideInput").checked = true;
+      const parent = document.getElementById("root");
+      parent.style.background = "#ff0000";
     }
   },
 };
