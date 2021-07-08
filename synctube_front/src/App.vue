@@ -106,11 +106,8 @@ export default {
     darkMode(status) {
       const parent = document.getElementById("app");
       const url = document.getElementById("url");
-      console.log("pass there");
       localStorage.setItem("darkMode", status.mode);
       if (status.mode) {
-        console.log("enable darkmode");
-
         this.darkModeStatus = true;
         parent.style.background = "#121212";
         parent.style.color = "white";
@@ -118,8 +115,6 @@ export default {
         url.style.color = "white";
         url.style.borderBottom = "1px solid white !important";
       } else {
-        console.log("disable darkmode");
-
         this.darkModeStatus = false;
         parent.style.background = "white";
         parent.style.color = "black";
