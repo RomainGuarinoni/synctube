@@ -119,6 +119,7 @@ export default {
         parent.style.background = "white";
         parent.style.color = "black";
         url.style.background = "white";
+        url.style.color = "black";
         url.style.borderBottom = "1px solid rgb(46, 46, 46)";
       }
     },

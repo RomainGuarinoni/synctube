@@ -1,7 +1,12 @@
 <template>
   <div id="root" @click="handleClick">
-    <input type="checkbox" id="slideInput" />
-    <div class="slider"></div>
+    <div
+      class="slider"
+      v-bind:class="{
+        sliderActivated: on,
+        darkBoxShadow: darkModeStatus,
+      }"
+    ></div>
   </div>
 </template>
 
@@ -48,18 +53,7 @@ export default {
   position: relative;
   z-index: 2;
   transition: all ease 200ms;
-}
-#root input[type="checkbox"] {
-  opacity: 0;
-  position: absolute;
-  z-index: 1000;
-  width: 100%;
-  height: 100%;
   cursor: pointer;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
 }
 .slider {
   background: #ff0000;
@@ -69,7 +63,7 @@ export default {
   border-radius: 50%;
   margin: 0 5px;
 }
-#root input:checked ~ .slider {
+.sliderActivated {
   background: white !important;
   transform: translate(25px);
 }
