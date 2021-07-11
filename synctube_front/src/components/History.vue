@@ -9,19 +9,28 @@
     <div id="left" :style="{ background: getImg(img) }"></div>
     <div class="right">
       <h3>{{ titre }}</h3>
-      <button class="load" @click="loadHistory">Load</button>
+      <div class="buttonHistory">
+        <button class="load isStroke" @click="deleteHistory">Delete</button>
+
+        <button class="load" @click="loadHistory">Load</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ["id", "titre", "img", "index", "darkModeStatus"],
+  props: ["id", "titre", "img", "index", "darkModeStatus", "_id"],
   methods: {
     loadHistory() {
       this.$emit("loadHistory", {
         id: this.id,
         titre: this.titre,
+      });
+    },
+    deleteHistory() {
+      this.$emit("deleteHistory", {
+        _id: this._id,
       });
     },
     getImg(img) {
@@ -43,6 +52,12 @@ export default {
   justify-content: space-around;
   align-items: center;
   position: relative;
+}
+.buttonHistory {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
 }
 .right h3 {
   font-weight: 100;
@@ -72,6 +87,11 @@ export default {
   border-radius: 5px;
   transition: all ease 200ms;
   cursor: pointer;
+}
+.isStroke {
+  background: white;
+  color: #ff0000;
+  border: 2px solid #ff0000;
 }
 .load:hover {
   box-shadow: 0 5px 5px rgba(43, 43, 43, 0.493);

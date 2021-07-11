@@ -84,6 +84,26 @@ io.on("connection", function (socket) {
       }
     });
   });
+  socket.on("DELETE_HISTORY", (data) => {
+    History.deleteOne({ _id: data._id })
+      .then(() => {
+        History.find({})
+          .sort({ date: -1 })
+          .exec(function (err, data) {
+            if (err) {
+              console.log("erreur" + e);
+            }
+            let tab = [];
+            for (i = 0; i < 5; i++) {
+              tab[i] = data[data.length - (i + 1)];
+            }
+            socket.emit("NEW_HISTORY", { history: tab });
+          });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  });
   socket.on("disconnect", () => {
     connected--;
     socket.emit("disconnected", {

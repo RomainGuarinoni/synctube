@@ -49,11 +49,13 @@
             v-for="(item, index) in historyTab"
             :key="index"
             :id="item.id"
+            :_id="item._id"
             :titre="item.titre"
             :img="item.img"
             :index="index"
             :darkModeStatus="darkModeStatus"
             @loadHistory="loadHistory"
+            @deleteHistory="deleteHistory"
           />
         </div>
         <button @click="loadMore">Load more</button>
@@ -185,6 +187,14 @@ export default {
         id: payload.id,
       });
     },
+    deleteHistory({ _id }) {
+      console.log(_id);
+      this.socket.emit("DELETE_HISTORY", {
+        _id: _id,
+      });
+      const index = this.historyTab.findIndex((video) => video._id == _id);
+      this.historyTab.splice(index, 1);
+    },
   },
   created: function() {
     localStorage.getItem("darkMode") == "true"
@@ -217,6 +227,9 @@ export default {
     });
     this.socket.on("PAUSE", () => {
       this.$refs.youtube.player.pauseVideo();
+    });
+    this.socket.on("NEW_HISTORY", (data) => {
+      this.historyTab = data.history;
     });
     this.socket.on("SEEK", (data) => {
       this.slave = true;
