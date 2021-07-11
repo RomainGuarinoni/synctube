@@ -73,7 +73,6 @@ io.on("connection", function (socket) {
     });
   });
   socket.on("HISTORY", (data) => {
-    console.log("history" + data.titre);
     var history = new History({
       id: data.id,
       titre: data.titre,

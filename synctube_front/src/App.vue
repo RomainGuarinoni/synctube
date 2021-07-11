@@ -153,15 +153,18 @@ export default {
         )
         .then((res) => {
           this.title = res.data.items[0].snippet.title;
-          this.socket.emit("HISTORY", {
-            id: id,
-            titre: res.data.items[0].snippet.title,
-            img: res.data.items[0].snippet.thumbnails.default.url,
-          });
+          if (id !== this.historyTab[0].id) {
+            this.socket.emit("HISTORY", {
+              id: id,
+              titre: res.data.items[0].snippet.title,
+              img: res.data.items[0].snippet.thumbnails.default.url,
+            });
+            axios.get("info").then((history) => {
+              this.historyTab = history.data;
+            });
+          }
         });
-      axios.get("info").then((history) => {
-        this.historyTab = history.data;
-      });
+
       this.$refs.youtube.player.cueVideoById(getIdFromUrl(id));
     },
     seek() {
