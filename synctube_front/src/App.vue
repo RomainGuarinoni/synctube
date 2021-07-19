@@ -102,7 +102,11 @@ export default {
   watch: {
     $route(to) {
       // react to route changes...
-      console.log(to.query.roomID);
+      this.roomID = to.query.roomID;
+      this.historyTab = [];
+      axios.get(`info/${this.roomID}`).then((data) => {
+        this.historyTab = data.data;
+      });
     },
   },
   computed: {
@@ -167,13 +171,15 @@ export default {
         )
         .then((res) => {
           this.title = res.data.items[0].snippet.title;
-          if (id !== this.historyTab[0].id) {
+          if (this.historyTab.length == 0 || id !== this.historyTab[0].id) {
             this.socket.emit("HISTORY", {
               id: id,
               titre: res.data.items[0].snippet.title,
               img: res.data.items[0].snippet.thumbnails.default.url,
+              date: new Date(Date.now()),
+              roomID: this.roomID,
             });
-            axios.get("info").then((history) => {
+            axios.get(`info/${this.roomID}`).then((history) => {
               this.historyTab = history.data;
             });
           }
@@ -188,7 +194,7 @@ export default {
       this.$refs.youtube.player.seekTo(this.forward);
     },
     loadMore() {
-      axios.get("moreinfo").then((history) => {
+      axios.get(`/moreinfo/${this.roomID}`).then((history) => {
         this.historyTab = history.data;
       });
     },
@@ -202,6 +208,7 @@ export default {
     deleteHistory({ _id }) {
       this.socket.emit("DELETE_HISTORY", {
         _id: _id,
+        roomID: this.roomID,
       });
       const index = this.historyTab.findIndex((video) => video._id == _id);
       this.historyTab.splice(index, 1);

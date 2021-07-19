@@ -23,32 +23,27 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 app.get("/info/:roomID", (req, res, next) => {
-  console.log(req.params.roomID);
-  History.find({})
+  History.find({ roomID: req.params.roomID })
     .sort({ date: -1 })
+    .limit(5)
+    .exec(function (err, data) {
+      if (err) {
+        throw new Error(err);
+      }
+      res.status(200).json(data);
+    });
+});
+app.get("/moreinfo/:roomID", (req, res) => {
+  History.find({ roomID: req.params.roomID })
+    .sort({ data: -1 })
+    .limit(20)
     .exec(function (err, data) {
       if (err) {
         console.log("erreur" + e);
       }
-      let tab = [];
-      for (i = 0; i < 5; i++) {
-        tab[i] = data[data.length - (i + 1)];
-      }
-      res.status(200).json(tab);
+
+      res.status(200).json(data);
     });
-});
-app.get("/moreinfo", (req, res) => {
-  console.log("yeaah");
-  History.find({}).exec(function (err, data) {
-    if (err) {
-      console.log("erreur" + e);
-    }
-    let tab = [];
-    for (i = 0; i < 20; i++) {
-      tab[i] = data[data.length - (i + 1)];
-    }
-    res.status(200).json(tab);
-  });
 });
 var connected = 0;
 io.on("connection", function (socket) {
@@ -57,7 +52,6 @@ io.on("connection", function (socket) {
     number: connected,
   });
   socket.on("LOAD", (data) => {
-    console.log("id : " + data.id);
     socket.broadcast.emit("LOAD_URL", {
       id: data.id,
     });
@@ -78,6 +72,8 @@ io.on("connection", function (socket) {
       id: data.id,
       titre: data.titre,
       img: data.img,
+      date: data.date,
+      roomID: data.roomID,
     });
     history.save(function (err) {
       if (err) {
@@ -88,17 +84,14 @@ io.on("connection", function (socket) {
   socket.on("DELETE_HISTORY", (data) => {
     History.deleteOne({ _id: data._id })
       .then(() => {
-        History.find({})
+        History.find({ roomID: data.roomID })
+          .limit(5)
           .sort({ date: -1 })
           .exec(function (err, data) {
             if (err) {
-              console.log("erreur" + e);
+              throw new Error(console.error());
             }
-            let tab = [];
-            for (i = 0; i < 5; i++) {
-              tab[i] = data[data.length - (i + 1)];
-            }
-            socket.emit("NEW_HISTORY", { history: tab });
+            socket.emit("NEW_HISTORY", { history: data });
           });
       })
       .catch((err) => {
