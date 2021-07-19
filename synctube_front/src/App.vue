@@ -2,7 +2,7 @@
   <div id="app">
     <header class="header">
       <div class="logoBox headerWidth">
-        <div class="logo">
+        <div class="logo" @click="goBackToGeneral()">
           <p>SYNCTUBE</p>
         </div>
         <p class="connect">connected : {{ connected }}</p>
@@ -212,6 +212,12 @@ export default {
       });
       const index = this.historyTab.findIndex((video) => video._id == _id);
       this.historyTab.splice(index, 1);
+    },
+    goBackToGeneral() {
+      this.$router.push({
+        path: "/",
+        query: { roomID: "general" },
+      });
     },
   },
   created: function() {
@@ -433,6 +439,9 @@ export default {
   color: white;
   background: #ff0000;
   font-size: 30px;
+  cursor: pointer !important;
+  position: relative;
+  z-index: 5;
 }
 .logo p {
   margin: 0;
