@@ -10,7 +10,15 @@
     <div class="right">
       <h3>{{ titre }}</h3>
       <div class="buttonHistory">
-        <button class="load isStroke" @click="deleteHistory">Delete</button>
+        <button
+          class="load isStroke"
+          v-bind:class="{
+            darkDelete: darkModeStatus,
+          }"
+          @click="deleteHistory"
+        >
+          Delete
+        </button>
 
         <button class="load" @click="loadHistory">Load</button>
       </div>
@@ -92,6 +100,10 @@ export default {
   background: white;
   color: #ff0000;
   border: 2px solid #ff0000;
+}
+.darkDelete {
+  background: transparent !important;
+  color: white !important;
 }
 .load:hover {
   box-shadow: 0 5px 5px rgba(43, 43, 43, 0.493);
