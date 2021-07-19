@@ -96,7 +96,14 @@ export default {
       slave: false, // savoir qui prends le controle du boutons play/pause
       socket: io(),
       darkModeStatus: false,
+      roomID: "general",
     };
+  },
+  watch: {
+    $route(to) {
+      // react to route changes...
+      console.log(to.query.roomID);
+    },
   },
   computed: {
     player() {
@@ -193,7 +200,6 @@ export default {
       });
     },
     deleteHistory({ _id }) {
-      console.log(_id);
       this.socket.emit("DELETE_HISTORY", {
         _id: _id,
       });
@@ -207,10 +213,18 @@ export default {
       : null;
   },
   mounted: function() {
+    //set the initial roomID based on URL query
+    this.$route.query.roomID
+      ? (this.roomID = this.$route.query.roomID)
+      : "general";
+
+    //set initial darkmode status
     localStorage.getItem("darkMode") == "true"
       ? this.darkMode({ mode: true })
       : null;
-    axios.get("info").then((history) => {
+
+    //get the history depnding on the roomID
+    axios.get(`info/${this.roomID}`).then((history) => {
       this.historyTab = history.data;
     });
     this.socket.on("LOAD_URL", (data) => {

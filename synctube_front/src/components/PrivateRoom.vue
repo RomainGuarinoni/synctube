@@ -60,7 +60,10 @@ export default {
         .substr(2, 9);
     },
     createNewRoom() {
-      console.log(this.generateRandomID());
+      this.$router.push({
+        path: "/",
+        query: { roomID: this.generateRandomID() },
+      });
     },
     joinARoom() {
       console.log("room joined");

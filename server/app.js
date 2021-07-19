@@ -22,7 +22,8 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 
-app.get("/info", (req, res, next) => {
+app.get("/info/:roomID", (req, res, next) => {
+  console.log(req.params.roomID);
   History.find({})
     .sort({ date: -1 })
     .exec(function (err, data) {
