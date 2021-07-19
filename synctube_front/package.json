@@ -13,7 +13,10 @@
     "socket.io": "^3.0.5",
     "socket.io-client": "^4.1.2",
     "vue": "^2.6.11",
-    "vue-youtube": "^1.4.0"
+    "vue-youtube": "^1.4.0",
+    "@fortawesome/fontawesome-svg-core": "^1.2.35",
+    "@fortawesome/free-solid-svg-icons": "^5.15.3",
+    "@fortawesome/vue-fontawesome": "^2.0.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

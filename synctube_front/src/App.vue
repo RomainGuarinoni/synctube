@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class="header">
+    <header class="header">
       <div class="logoBox headerWidth">
         <div class="logo">
           <p>SYNCTUBE</p>
@@ -17,7 +17,7 @@
         <span>Night mode</span
         ><ToggleButton @DARKMODE="darkMode" :darkModeStatus="darkModeStatus" />
       </div>
-    </div>
+    </header>
 
     <div class="player">
       <h1>{{ title }}</h1>
@@ -42,23 +42,26 @@
         />
         <p>{{ forwardTime }}</p>
       </div>
-      <div class="history">
-        <h2>History</h2>
-        <div class="historyScroll">
-          <History
-            v-for="(item, index) in historyTab"
-            :key="index"
-            :id="item.id"
-            :_id="item._id"
-            :titre="item.titre"
-            :img="item.img"
-            :index="index"
-            :darkModeStatus="darkModeStatus"
-            @loadHistory="loadHistory"
-            @deleteHistory="deleteHistory"
-          />
+      <div class="sideComponent">
+        <PrivateRoom :darkModeStatus="darkModeStatus" />
+        <div class="history">
+          <h2>History</h2>
+          <div class="historyScroll">
+            <History
+              v-for="(item, index) in historyTab"
+              :key="index"
+              :id="item.id"
+              :_id="item._id"
+              :titre="item.titre"
+              :img="item.img"
+              :index="index"
+              :darkModeStatus="darkModeStatus"
+              @loadHistory="loadHistory"
+              @deleteHistory="deleteHistory"
+            />
+          </div>
+          <button @click="loadMore">Load more</button>
         </div>
-        <button @click="loadMore">Load more</button>
       </div>
     </div>
   </div>
@@ -71,12 +74,14 @@ import axios from "axios";
 import io from "socket.io-client";
 import History from "./components/History";
 import ToggleButton from "./components/ToggleButton";
+import PrivateRoom from "./components/PrivateRoom.vue";
 // eslint-disable-next-line no-unused-vars
 export default {
   name: "App",
   components: {
     History,
     ToggleButton,
+    PrivateRoom,
   },
   data() {
     return {
@@ -246,17 +251,22 @@ export default {
 </script>
 
 <style>
-.history {
+.sideComponent {
   position: absolute;
-  top: 100px;
-  right: 10px;
+  z-index: -1;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  justify-content: space-between;
+}
+.history {
   max-width: 480px;
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   height: 800px;
-  z-index: 2;
 }
 .player {
   position: absolute;
@@ -278,6 +288,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-around;
+  flex-wrap: wrap;
   width: 100%;
 }
 
