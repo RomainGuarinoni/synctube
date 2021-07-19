@@ -1,10 +1,17 @@
 <template>
-  <div id="root" @click="handleClick">
+  <div
+    id="root"
+    @click="handleClick"
+    v-bind:class="{
+      dark: on,
+      light: !on,
+    }"
+  >
     <div
       class="slider"
       v-bind:class="{
         sliderActivated: on,
-        darkBoxShadow: darkModeStatus,
+        darkBoxShadow: !on,
       }"
     ></div>
   </div>
@@ -17,24 +24,16 @@ export default {
       type: Boolean,
     },
   },
+  data() {
+    return {
+      on: this.darkModeStatus,
+    };
+  },
   methods: {
     handleClick() {
       this.on = !this.on;
-      const parent = document.getElementById("root");
-      this.on
-        ? (parent.style.background = "#ff0000")
-        : (parent.style.background = "white");
       this.$emit("DARKMODE", { mode: this.on });
     },
-  },
-  mounted: function() {
-    console.log(this.darkModeStatus);
-    if (this.darkModeStatus) {
-      this.on = true;
-      document.getElementById("slideInput").checked = true;
-      const parent = document.getElementById("root");
-      parent.style.background = "#ff0000";
-    }
   },
 };
 </script>
@@ -46,7 +45,6 @@ export default {
   border-radius: 30px;
   width: 55px;
   height: 25px;
-  background: white;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -62,6 +60,12 @@ export default {
   transition: all ease 200ms;
   border-radius: 50%;
   margin: 0 5px;
+}
+.dark {
+  background: #ff0000;
+}
+.light {
+  background: white;
 }
 .sliderActivated {
   background: white !important;
