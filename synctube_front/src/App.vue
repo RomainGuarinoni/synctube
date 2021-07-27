@@ -43,7 +43,7 @@
         <p>{{ forwardTime }}</p>
       </div>
       <div class="sideComponent">
-        <PrivateRoom :darkModeStatus="darkModeStatus" />
+        <PrivateRoom :darkModeStatus="darkModeStatus" :roomID="roomID" />
         <div class="history">
           <h2>History</h2>
           <div class="historyScroll">

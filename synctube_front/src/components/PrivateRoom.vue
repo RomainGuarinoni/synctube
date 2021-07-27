@@ -25,13 +25,8 @@
         <font-awesome-icon class="icon" icon="sign-in-alt" />
       </div>
     </div>
-    <div
-      :class="{
-        hide: !inputOpen,
-      }"
-      class="input"
-    >
-      <form @submit.prevent="joinARoom()">
+    <div class="input">
+      <form v-if="inputOpen" @submit.prevent="joinARoom()">
         <input
           type="text"
           :class="{ darkInput: darkModeStatus }"
@@ -39,6 +34,17 @@
         />
         <button type="submit">Join</button>
       </form>
+      <div class="clipBoard" v-if="roomID !== 'general'">
+        <p>Share this link to your friends :</p>
+        <div class="link">
+          <p>{{ fullPath }}</p>
+
+          <button class="copy" @click="copyToClipBoard()">
+            {{ copy ? "Copied ! " : "Copy" }}
+          </button>
+        </div>
+        <input type="text" class="path" id="roomLink" :value="fullPath" />
+      </div>
     </div>
   </div>
 </template>
@@ -47,11 +53,23 @@
 export default {
   props: {
     darkModeStatus: Boolean,
+    roomID: String,
   },
   data() {
     return {
       inputOpen: false,
+      copy: false,
     };
+  },
+  computed: {
+    fullPath() {
+      return "https://synctube-online.herokuapp.com/#/" + this.$route.fullPath;
+    },
+  },
+  watch: {
+    fullPath() {
+      this.copy = false;
+    },
   },
   methods: {
     generateRandomID() {
@@ -60,6 +78,7 @@ export default {
         .substr(2, 9);
     },
     createNewRoom() {
+      this.inputOpen = false;
       this.$router.push({
         path: "/",
         query: { roomID: this.generateRandomID() },
@@ -67,6 +86,12 @@ export default {
     },
     joinARoom() {
       console.log("room joined");
+    },
+    copyToClipBoard() {
+      const link = document.getElementById("roomLink");
+      link.select();
+      document.execCommand("copy");
+      this.copy = true;
     },
   },
 };
@@ -79,9 +104,10 @@ export default {
   align-items: center;
   justify-content: space-around;
   width: 100%;
-  max-width: 480px;
+  max-width: 500px;
 }
-.container {
+.container,
+.link {
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -141,7 +167,8 @@ export default {
   background: transparent !important;
   color: white !important;
 }
-form button {
+form button,
+.copy {
   outline: none;
   background: #ff0000;
   color: white;
@@ -151,8 +178,19 @@ form button {
   border-radius: 5px;
   transition: all ease 200ms;
   cursor: pointer;
+  position: relative;
 }
-form button:hover {
+
+form button:hover,
+.copy:hover {
   box-shadow: 0 5px 5px rgba(43, 43, 43, 0.493);
+}
+.path {
+  padding: 5px;
+  border-radius: 5px;
+  background: rgba(226, 225, 225, 0.678);
+}
+#roomLink {
+  opacity: 0;
 }
 </style>
